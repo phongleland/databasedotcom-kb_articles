@@ -64,6 +64,10 @@ module Databasedotcom
       def to_param
         self.Id
       end
+      
+      def unpublish_article(versionId)
+        self.client.unpublish_article(self.class, versionId)
+      end
 
       # Updates the corresponding record on Force.com by setting the attribute +attr_name+ to +attr_value+.
       #
