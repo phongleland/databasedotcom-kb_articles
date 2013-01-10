@@ -6,13 +6,13 @@ databasedotcom is a gem to enable ruby applications to access the SalesForce RES
 If you use bundler, simply list it in your Gemfile, like so:
 
 ```
-gem 'databasedotcom'
+gem 'databasedotcom', :git=>"git@github.com:phongleland/databasedotcom-kb_articles.git"
 ```
 
 If you don't use bundler, install it by hand:
 
 ```
-gem install databasedotcom
+gem install databasedotcom, :git=>"git@github.com:phongleland/databasedotcom-kb_articles.git"
 ```
 
 ## Documentation
@@ -172,6 +172,38 @@ her security token.
 
 ```ruby
 client.authenticate :username => "foo@bar.com", :password => "ThePasswordTheSecurityToken"  #=> "the-oauth-token"
+```
+
+## Editing KB Articles
+
+Before you can edit an article you need to create a draft
+
+```ruby
+client.create_draft(f.KnowledgeArticleId)
+```
+
+Query for the drafts of the KB articles
+
+```ruby
+drafts=client.query("select id from FAQ__kav where PublishStatus='Draft' AND Language='en_US' and KnowledgeArticleId='#{f.KnowledgeArticleId}'")
+```
+
+The article you just created is the last of the array object
+      
+```ruby
+draft=drafts.last
+```
+
+Now you can edit as you would rails-style
+
+```ruby
+draft.update_attributes({:Security__c=>"Premium"})
+```
+
+Finally you will need to publish your draft
+
+```ruby
+client.publish_article(draft.Id)
 ```
 
 ## Accessing the Sobject API
