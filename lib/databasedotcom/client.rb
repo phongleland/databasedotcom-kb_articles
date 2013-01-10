@@ -268,11 +268,14 @@ module Databasedotcom
       http_delete("/services/data/v#{self.version}/sobjects/#{clazz.sobject_name}/#{record_id}")
     end
     
-    def unpublish_article(class_or_classname, versionId)
-      class_or_classname = find_or_materialize(class_or_classname)
-      json_for_update = coerced_json({"publishStatus"=>"Draft"}, class_or_classname)
-      http_patch("/services/data/v#{self.version}/knowledgeManagement/articleVersions/masterVersions/#{versionId}", json_for_update)
+    def create_draft(article_id)
+      result = http_post("/services/data/v#{self.version}/knowledgeManagement/articleVersions/masterVersions", {"articleId"=>article_id}.to_json)
     end
+    
+    def publish_article(versionId)
+      http_patch("/services/data/v#{self.version}/knowledgeManagement/articleVersions/masterVersions/#{versionId}", {"publishStatus"=>"Online"}.to_json)
+    end
+    
 
     # Returns a Collection of recently touched items. The Collection contains Sobject instances that are fully populated with their correct values.
     def recent
